@@ -10,5 +10,11 @@ namespace meltyStars.Hotfix
         {
             Debug.Log("Hello Melty Hotfix");
         }
+
+        public static void Do()
+        {
+            GameObject g = new GameObject("Create By Hotfix");
+            g.AddComponent<MeshRenderer>();
+        }
     }
 }

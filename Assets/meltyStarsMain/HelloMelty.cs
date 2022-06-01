@@ -10,12 +10,12 @@ namespace meltyStars.Main
         // Start is called before the first frame update
         void Start()
         {
-            var dlls = Directory.GetFiles(Application.streamingAssetsPath);
-            foreach (var dll in dlls)
-            {
-                print(dll);
-            }
-            //TextAsset hotfixDll = 
+            TextAsset hotfixBytes = Resources.Load("meltyStars.Hotfix.dll") as TextAsset;
+            var ass = System.Reflection.Assembly.Load(hotfixBytes.bytes);
+
+            var type = ass.GetType("meltyStars.Hotfix.HelloMeltyHotfix");
+            var me = type.GetMethod("Do");
+            me.Invoke(null, null);
         }
 
         // Update is called once per frame
