@@ -15,13 +15,14 @@ namespace meltyStars.Main
 
             var type = ass.GetType("meltyStars.Hotfix.HelloMeltyHotfix");
             var me = type.GetMethod("Do");
+            var me2 = type.GetMethod("Say");
             me.Invoke(null, null);
+            me2.Invoke(null, null);
         }
 
         // Update is called once per frame
         void Update()
         {
-
         }
     }
 }

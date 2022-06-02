@@ -14,7 +14,7 @@ namespace meltyStars.Hotfix
         public static void Do()
         {
             GameObject g = new GameObject("Create By Hotfix");
-            g.AddComponent<MeshRenderer>();
+            g.AddComponent<UpdateTest>();
         }
     }
 }
