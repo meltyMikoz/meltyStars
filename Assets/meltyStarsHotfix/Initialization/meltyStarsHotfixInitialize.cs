@@ -15,9 +15,12 @@ namespace meltyStars.Hotfix
         {
             Init();
         }
+        /// <summary>
+        /// 请在这里完成初始化
+        /// </summary>
         public static void Init()
         {
-            Debug.Log($"meltyStarsHotfix 被初始化辣");
+            GameObject.Find("Text").GetComponent<UnityEngine.UI.Text>().text = "After";
         }
 
     }
