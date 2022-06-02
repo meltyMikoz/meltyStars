@@ -7,7 +7,7 @@ namespace meltyStars.Hotfix
 {
     public class meltyStarsHotfixInitialize : HotFixInitialize
     {
-        private void Awake()
+        private void OnEnable()
         {
             _Instance = this;
         }
