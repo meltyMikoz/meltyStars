@@ -19,7 +19,7 @@ namespace meltyStars.Editor
         }
 
         public static string DllCompileOutputPath => Path.GetFullPath($"{Application.dataPath}/../Temp/meltyStars");
-        public static string DllBytesOutputPath => $"{Application.dataPath}/meltyStars/DllBytes";
+        public static string DllBytesOutputPath => $"{Application.dataPath}/ResBundles/DllBytes";
         public static string GetDllBuildOutputDirByTarget(BuildTarget target)
         {
             return $"{DllCompileOutputPath}/{target}";
@@ -107,6 +107,8 @@ namespace meltyStars.Editor
                 string dllOrigin = $"{buildPath}/{dll}";
                 string dllBytes = $"{bytesDir}/{dll}.bytes";
                 File.Copy(dllOrigin, dllBytes, true);
+                //拷贝一份到StreamingAssets
+                File.Copy(dllOrigin, $"{Application.streamingAssetsPath}/{dll}.bytes", true);
             });
             AssetDatabase.Refresh();
         }
