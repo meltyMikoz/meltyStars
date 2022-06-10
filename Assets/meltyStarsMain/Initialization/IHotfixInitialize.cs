@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace meltyStars.Main
+namespace meltyStars
 {
     public abstract class HotFixInitialize : MonoBehaviour
     {

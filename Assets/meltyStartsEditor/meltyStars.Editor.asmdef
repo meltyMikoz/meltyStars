@@ -2,7 +2,8 @@
     "name": "meltyStars.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:3d360f92e3fc17f44afcd05c61d87c93"
+        "GUID:3d360f92e3fc17f44afcd05c61d87c93",
+        "GUID:c02f630809ced4e4180ed7296da31c2a"
     ],
     "includePlatforms": [
         "Editor"

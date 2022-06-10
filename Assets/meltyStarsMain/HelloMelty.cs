@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using System.IO;
 
 namespace meltyStars.Main
@@ -18,11 +19,6 @@ namespace meltyStars.Main
             var me2 = type.GetMethod("Say");
             me.Invoke(null, null);
             me2.Invoke(null, null);
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
         }
     }
 }

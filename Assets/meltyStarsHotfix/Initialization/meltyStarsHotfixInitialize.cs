@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using meltyStars.Main;
 
-namespace meltyStars.Hotfix
+namespace meltyStars
 {
     public class meltyStarsHotfixInitialize : HotFixInitialize
     {
@@ -18,9 +17,16 @@ namespace meltyStars.Hotfix
         /// <summary>
         /// 请在这里完成初始化
         /// </summary>
-        public static void Init()
+        public async static void Init()
         {
+            MSLogger.LogInfo("Initialize");
+            MSLogger.LogWarning("Warning");
+            MSLogger.LogError("Error");
             GameObject.Find("Text").GetComponent<UnityEngine.UI.Text>().text = "After";
+
+            var g = await UpdateTest.TestTask();
+
+            print(g);
         }
 
     }
