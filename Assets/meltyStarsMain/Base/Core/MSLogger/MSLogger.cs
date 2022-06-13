@@ -1,10 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 
 namespace meltyStars
 {
+    /// <summary>
+    /// 扩展日志
+    /// </summary>
     public class MSLogger
     {
         private static string GetLogStr(object logItem, string color)

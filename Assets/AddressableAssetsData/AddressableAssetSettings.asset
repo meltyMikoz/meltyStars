@@ -82,6 +82,7 @@ MonoBehaviour:
     m_LabelNames:
     - default
     - Dll
+    - Scene
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: b9d9155fb2892ff44ae167f99e939be0, type: 2}
