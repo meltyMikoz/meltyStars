@@ -16,31 +16,35 @@ namespace meltyStars
         /// <typeparam name="TObject"></typeparam>
         public class MSResourceRequestHandle<TObject> : IEquatable<MSResourceRequestHandle<TObject>> where TObject : UnityEngine.Object
         {
-            private AsyncOperationHandle<TObject> handle;
-            public AsyncOperationHandle<TObject> Handle => handle;
+            private AsyncOperationHandle<TObject> asyncOperationHandle;
+            public AsyncOperationHandle<TObject> AsyncOperationHandle => asyncOperationHandle;
             private MSResourceRequestHandle(AsyncOperationHandle<TObject> handle)
             {
-                this.handle = handle;
+                this.asyncOperationHandle = handle;
             }
-            public string DebugName => handle.DebugName;
-            public bool IsDone => handle.IsDone;
-            public Exception OperationException => handle.OperationException;
-            public float PercentComplete => handle.PercentComplete;
-            public TObject Result => handle.Result;
-            public AsyncOperationStatus Status => handle.Status;
-            public Task<TObject> Task => handle.Task;
+            public bool IsDone => asyncOperationHandle.IsDone;
+            public Exception OperationException => asyncOperationHandle.OperationException;
+            public float PercentComplete => asyncOperationHandle.PercentComplete;
+            public TObject Result => asyncOperationHandle.Result;
+            public AsyncOperationStatus Status => asyncOperationHandle.Status;
+            public Task<TObject> Task => asyncOperationHandle.Task;
 
-            public DownloadStatus GetDownloadStatus() => handle.GetDownloadStatus();
-            public override int GetHashCode() => handle.GetHashCode();
-            public bool IsValid() => handle.IsValid();
-            public TObject WaitForCompletion() => handle.WaitForCompletion();
-            public static MSResourceRequestHandle<TObject> CreateMSResourceRequestHandle(AsyncOperationHandle<TObject> asyncOperationHandle)
+            public event Action<MSResourceRequestHandle<TObject>> OnCompleted;
+            public event Action OnCompletedTypeless;
+            public event Action OnDestroyed;
+            public TObject WaitForCompletion() => asyncOperationHandle.WaitForCompletion();
+            public TObject WaitForCompletionTask()
+            {
+                Task.Wait();
+                return Task.Result;
+            }
+            public static MSResourceRequestHandle<TObject> CreateHandle(AsyncOperationHandle<TObject> asyncOperationHandle)
             {
                 return new MSResourceRequestHandle<TObject>(asyncOperationHandle);
             }
             public bool Equals(MSResourceRequestHandle<TObject> other)
             {
-                return handle.Equals(other.Handle);
+                return asyncOperationHandle.Equals(other.AsyncOperationHandle);
             }
         }
         public static MSResourceRequestHandle<TObject> LoadAsync<TObject>(string group, string name,
