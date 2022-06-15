@@ -21,10 +21,10 @@ namespace meltyStars
             private MSResourceRequestHandle(AsyncOperationHandle<TObject> asyncOperationHandle)
             {
                 this.asyncOperationHandle = asyncOperationHandle;
-                asyncOperationHandle.Completed += handle =>
+                asyncOperationHandle.Completed += _ =>
                 {
-                    OnCompleted.Invoke(this.Result);
-                    OnCompletedHandle.Invoke(this);
+                    OnCompleted?.Invoke(this.Result);
+                    OnCompletedHandle?.Invoke(this);
                 };
             }
             public bool IsDone => asyncOperationHandle.IsDone;
@@ -56,10 +56,21 @@ namespace meltyStars
 
             }
         }
-        public static MSResourceRequestHandle<TObject> LoadAsync<TObject>(string group, string name,
-                                                        System.Action<TObject> action) where TObject : UnityEngine.Object
+        public static TObject Load<TObject>(string path) where TObject : UnityEngine.Object
         {
-            string path = $"{group}/{name}";
+            var msHandle = MSResourceRequestHandle<TObject>.CreateHandle(Addressables.LoadAssetAsync<TObject>(path));
+            TObject result = msHandle.WaitForCompletion();
+            return result;
+        }
+        public static TObject Load<TObject>(params string[] paths) where TObject : UnityEngine.Object
+        {
+            string path = string.Concat(string.Join("/", paths));
+            var msHandle = MSResourceRequestHandle<TObject>.CreateHandle(Addressables.LoadAssetAsync<TObject>(path));
+            TObject result = msHandle.WaitForCompletion();
+            return result;
+        }
+        public static MSResourceRequestHandle<TObject> LoadAsync<TObject>(string path) where TObject : UnityEngine.Object
+        {
             return null;
         }
     }
