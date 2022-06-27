@@ -8,7 +8,7 @@ using Sirenix.OdinInspector;
 
 namespace meltyStars.Editor
 {
-    public class meltyStarsDllHelper
+    public class meltyStarsAssemblyEditor
     {
         private static void CreateDirIfNotExists(string dirName)
         {
@@ -18,63 +18,63 @@ namespace meltyStars.Editor
             }
         }
 
-        public static string DllCompileOutputPath => Path.GetFullPath($"{Application.dataPath}/../Temp/meltyStars");
-        public static string DllBytesOutputPath => $"{Application.dataPath}/ResBundles/DllBytes";
+        public static string AssemblyOutputPath => Path.GetFullPath($"{Application.dataPath}/../Temp/meltyStars");
+        public static string AssemblyAssetsOutputPath => $"{Application.dataPath}/ResBundles/Assembly";
         public static string GetDllBuildOutputDirByTarget(BuildTarget target)
         {
-            return $"{DllCompileOutputPath}/{target}";
+            return $"{AssemblyOutputPath}/{target}";
         }
         public static string GetDllBytesOutputDirByTarget(BuildTarget target)
         {
-            return $"{DllBytesOutputPath}/{target}";
+            return $"{AssemblyAssetsOutputPath}/{target}";
         }
 
-        [MenuItem("meltyStars/CompileDll/ActiveBuildTarget")]
+        [MenuItem("meltyStars/CompileAssembly/ActiveBuildTarget")]
         public static void CompileDllActiveTarget()
         {
             var target = EditorUserBuildSettings.activeBuildTarget;
-            CompileDll(GetDllBuildOutputDirByTarget(target), target);
+            CompileAssembly(GetDllBuildOutputDirByTarget(target), target);
         }
-        [MenuItem("meltyStars/CompileDll/Win64")]
+        [MenuItem("meltyStars/CompileAssembly/Win64")]
         public static void CompileDllWin64()
         {
             var target = BuildTarget.StandaloneWindows64;
-            CompileDll(GetDllBuildOutputDirByTarget(target), target);
+            CompileAssembly(GetDllBuildOutputDirByTarget(target), target);
         }
 
-        [MenuItem("meltyStars/CompileDll/Linux64")]
+        [MenuItem("meltyStars/CompileAssembly/Linux64")]
         public static void CompileDllLinux()
         {
             var target = BuildTarget.StandaloneLinux64;
-            CompileDll(GetDllBuildOutputDirByTarget(target), target);
+            CompileAssembly(GetDllBuildOutputDirByTarget(target), target);
         }
 
-        [MenuItem("meltyStars/CompileDll/OSX")]
+        [MenuItem("meltyStars/CompileAssembly/OSX")]
         public static void CompileDllOSX()
         {
             var target = BuildTarget.StandaloneOSX;
-            CompileDll(GetDllBuildOutputDirByTarget(target), target);
+            CompileAssembly(GetDllBuildOutputDirByTarget(target), target);
         }
 
-        [MenuItem("meltyStars/CompileDll/Android")]
+        [MenuItem("meltyStars/CompileAssembly/Android")]
         public static void CompileDllAndroid()
         {
             var target = BuildTarget.Android;
-            CompileDll(GetDllBuildOutputDirByTarget(target), target);
+            CompileAssembly(GetDllBuildOutputDirByTarget(target), target);
         }
 
-        [MenuItem("meltyStars/CompileDll/IOS")]
+        [MenuItem("meltyStars/CompileAssembly/IOS")]
         public static void CompileDllIOS()
         {
             var target = BuildTarget.iOS;
-            CompileDll(GetDllBuildOutputDirByTarget(target), target);
+            CompileAssembly(GetDllBuildOutputDirByTarget(target), target);
         }
         /// <summary>
-        /// 编译Dll
+        /// 编译程序集
         /// </summary>
         /// <param name="buildPath"></param>
         /// <param name="target"></param>
-        private static void CompileDll(string buildPath, BuildTarget target)
+        private static void CompileAssembly(string buildPath, BuildTarget target)
         {
             var group = BuildPipeline.GetBuildTargetGroup(target);
 
