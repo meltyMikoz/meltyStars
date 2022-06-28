@@ -17,7 +17,7 @@ namespace meltyStars.Editor
                 Directory.CreateDirectory(dirName);
             }
         }
-
+        public static string CodePath => Path.GetFullPath($"{Application.dataPath}/../meltyStarsHotfix/");
         public static string AssemblyOutputPath => Path.GetFullPath($"{Application.dataPath}/../Temp/meltyStars");
         public static string AssemblyAssetsOutputPath => $"{Application.dataPath}/ResBundles/Assembly";
         public static string GetDllBuildOutputDirByTarget(BuildTarget target)
@@ -76,20 +76,29 @@ namespace meltyStars.Editor
         /// <param name="target"></param>
         private static void CompileAssembly(string buildPath, BuildTarget target)
         {
-            var group = BuildPipeline.GetBuildTargetGroup(target);
+            //var group = BuildPipeline.GetBuildTargetGroup(target);
 
-            ScriptCompilationSettings scriptCompilationSettings = new ScriptCompilationSettings();
-            scriptCompilationSettings.group = group;
-            scriptCompilationSettings.target = target;
-            scriptCompilationSettings.options = ScriptCompilationOptions.DevelopmentBuild;
-            CreateDirIfNotExists(buildPath);
-            ScriptCompilationResult scriptCompilationResult = PlayerBuildInterface.CompilePlayerScripts(scriptCompilationSettings, buildPath);
-            foreach (var ass in scriptCompilationResult.assemblies)
+            //ScriptCompilationSettings scriptCompilationSettings = new ScriptCompilationSettings();
+            //scriptCompilationSettings.group = group;
+            //scriptCompilationSettings.target = target;
+            //scriptCompilationSettings.options = ScriptCompilationOptions.DevelopmentBuild;
+            //CreateDirIfNotExists(buildPath);
+            //ScriptCompilationResult scriptCompilationResult = PlayerBuildInterface.CompilePlayerScripts(scriptCompilationSettings, buildPath);
+            //foreach (var ass in scriptCompilationResult.assemblies)
+            //{
+            //    Debug.LogFormat("compile assemblies:{0}", ass);
+            //}
+
+            //CopyDllsToAssetsMenu(buildPath, GetDllBytesOutputDirByTarget(target));
+
+            string hotfixCodePath = "meltyStarsHotfix/";
+            List<string> allScripts = new List<string>();
+            DirectoryInfo directoryInfo = new DirectoryInfo(hotfixCodePath);
+            FileInfo[] fileInfos = directoryInfo.GetFiles("*.cs", SearchOption.AllDirectories);
+            foreach (var script in fileInfos)
             {
-                Debug.LogFormat("compile assemblies:{0}", ass);
+                MSLogger.LogWarning(script.FullName);
             }
-
-            CopyDllsToAssetsMenu(buildPath, GetDllBytesOutputDirByTarget(target));
         }
         /// <summary>
         /// 在这里修改热更新dll列表
