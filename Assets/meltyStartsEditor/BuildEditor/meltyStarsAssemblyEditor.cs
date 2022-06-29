@@ -4,7 +4,8 @@ using UnityEditor;
 using UnityEditor.Build.Player;
 using UnityEngine;
 using System.IO;
-using Sirenix.OdinInspector;
+using UnityEditor.Compilation;
+using System.Linq;
 
 namespace meltyStars.Editor
 {
@@ -17,64 +18,64 @@ namespace meltyStars.Editor
                 Directory.CreateDirectory(dirName);
             }
         }
-        public static string CodePath => Path.GetFullPath($"{Application.dataPath}/../meltyStarsHotfix/");
+        public static string HotfixCodePath => Path.GetFullPath($"{Application.dataPath}/../meltyStarsHotfix/");
         public static string AssemblyOutputPath => Path.GetFullPath($"{Application.dataPath}/../Temp/meltyStars");
         public static string AssemblyAssetsOutputPath => $"{Application.dataPath}/ResBundles/Assembly";
         public static string GetDllBuildOutputDirByTarget(BuildTarget target)
         {
-            return $"{AssemblyOutputPath}/{target}";
+            return $"{AssemblyOutputPath}\\{target}";
         }
         public static string GetDllBytesOutputDirByTarget(BuildTarget target)
         {
-            return $"{AssemblyAssetsOutputPath}/{target}";
+            return $"{AssemblyAssetsOutputPath}\\{target}";
         }
 
-        [MenuItem("meltyStars/CompileAssembly/ActiveBuildTarget")]
-        public static void CompileDllActiveTarget()
+        [MenuItem("meltyStars/CompileAssembly/Debug/ActiveBuildTarget")]
+        public static void CompileDllActiveTargetDebug()
         {
             var target = EditorUserBuildSettings.activeBuildTarget;
-            CompileAssembly(GetDllBuildOutputDirByTarget(target), target);
+            CompileAssembly(GetDllBuildOutputDirByTarget(target), target, CodeOptimization.Debug);
         }
-        [MenuItem("meltyStars/CompileAssembly/Win64")]
-        public static void CompileDllWin64()
+        [MenuItem("meltyStars/CompileAssembly/Debug/Win64")]
+        public static void CompileDllWin64Debug()
         {
             var target = BuildTarget.StandaloneWindows64;
-            CompileAssembly(GetDllBuildOutputDirByTarget(target), target);
+            CompileAssembly(GetDllBuildOutputDirByTarget(target), target, CodeOptimization.Debug);
         }
 
-        [MenuItem("meltyStars/CompileAssembly/Linux64")]
-        public static void CompileDllLinux()
+        [MenuItem("meltyStars/CompileAssembly/Debug/Linux64")]
+        public static void CompileDllLinuxDebug()
         {
             var target = BuildTarget.StandaloneLinux64;
-            CompileAssembly(GetDllBuildOutputDirByTarget(target), target);
+            CompileAssembly(GetDllBuildOutputDirByTarget(target), target, CodeOptimization.Debug);
         }
 
-        [MenuItem("meltyStars/CompileAssembly/OSX")]
-        public static void CompileDllOSX()
+        [MenuItem("meltyStars/CompileAssembly/Debug/OSX")]
+        public static void CompileDllOSXDebug()
         {
             var target = BuildTarget.StandaloneOSX;
-            CompileAssembly(GetDllBuildOutputDirByTarget(target), target);
+            CompileAssembly(GetDllBuildOutputDirByTarget(target), target, CodeOptimization.Debug);
         }
 
-        [MenuItem("meltyStars/CompileAssembly/Android")]
-        public static void CompileDllAndroid()
+        [MenuItem("meltyStars/CompileAssembly/Debug/Android")]
+        public static void CompileDllAndroidDebug()
         {
             var target = BuildTarget.Android;
-            CompileAssembly(GetDllBuildOutputDirByTarget(target), target);
+            CompileAssembly(GetDllBuildOutputDirByTarget(target), target, CodeOptimization.Debug);
         }
 
-        [MenuItem("meltyStars/CompileAssembly/IOS")]
-        public static void CompileDllIOS()
+        [MenuItem("meltyStars/CompileAssembly/Debug/IOS")]
+        public static void CompileDllIOSDebug()
         {
             var target = BuildTarget.iOS;
-            CompileAssembly(GetDllBuildOutputDirByTarget(target), target);
+            CompileAssembly(GetDllBuildOutputDirByTarget(target), target, CodeOptimization.Debug);
         }
         /// <summary>
         /// 编译程序集
         /// </summary>
         /// <param name="buildPath"></param>
         /// <param name="target"></param>
-        private static void CompileAssembly(string buildPath, BuildTarget target)
+        private static void CompileAssembly(string buildPath, BuildTarget target, CodeOptimization codeOptimization)
         {
             //var group = BuildPipeline.GetBuildTargetGroup(target);
 
@@ -91,13 +92,37 @@ namespace meltyStars.Editor
 
             //CopyDllsToAssetsMenu(buildPath, GetDllBytesOutputDirByTarget(target));
 
-            string hotfixCodePath = "meltyStarsHotfix/";
             List<string> allScripts = new List<string>();
-            DirectoryInfo directoryInfo = new DirectoryInfo(hotfixCodePath);
+            DirectoryInfo directoryInfo = new DirectoryInfo(HotfixCodePath);
             FileInfo[] fileInfos = directoryInfo.GetFiles("*.cs", SearchOption.AllDirectories);
             foreach (var script in fileInfos)
             {
-                MSLogger.LogWarning(script.FullName);
+                allScripts.Add(script.FullName);
+            }
+            string dllPath = Path.Combine(GetDllBuildOutputDirByTarget(target), "Hotfix.dll");
+            MSLogger.LogError(dllPath);
+            CreateDirIfNotExists(GetDllBuildOutputDirByTarget(target));
+
+            AssemblyBuilder assemblyBuilder = new AssemblyBuilder(dllPath, allScripts.ToArray());
+            BuildTargetGroup buildTargetGroup = BuildPipeline.GetBuildTargetGroup(target);
+
+            //assemblyBuilder.additionalReferences = null;
+            assemblyBuilder.compilerOptions.CodeOptimization = codeOptimization;
+            assemblyBuilder.compilerOptions.ApiCompatibilityLevel = PlayerSettings.GetApiCompatibilityLevel(buildTargetGroup);
+            assemblyBuilder.flags = AssemblyBuilderFlags.None;
+            assemblyBuilder.referencesOptions = ReferencesOptions.UseEngineModules;
+            assemblyBuilder.buildTarget = target;
+            assemblyBuilder.buildStarted  += path => MSLogger.LogInfo($"Start Building Assembly : {path}......");
+            assemblyBuilder.buildFinished += (path, complierMessages) => 
+            {
+                var warnings = complierMessages.Where(message => message.type == CompilerMessageType.Warning).ToList();
+                var errors = complierMessages.Where(message => message.type == CompilerMessageType.Error).ToList();
+                warnings.ForEach(warning => MSLogger.LogWarning(warning.message));
+                errors.ForEach(error => MSLogger.LogError(error.message));
+            };
+            if (!assemblyBuilder.Build())
+            {
+                MSLogger.LogError($"Build Assembly Failed : {assemblyBuilder.assemblyPath}");
             }
         }
         /// <summary>
