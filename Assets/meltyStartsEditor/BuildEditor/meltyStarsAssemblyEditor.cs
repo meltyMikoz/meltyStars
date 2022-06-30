@@ -6,6 +6,7 @@ using UnityEngine;
 using System.IO;
 using UnityEditor.Compilation;
 using System.Linq;
+using System.Threading;
 
 namespace meltyStars.Editor
 {
@@ -30,7 +31,7 @@ namespace meltyStars.Editor
             return $"{AssemblyAssetsOutputPath}\\{target}";
         }
 
-        [MenuItem("meltyStars/CompileAssembly/Debug/ActiveBuildTarget")]
+        [MenuItem("meltyStars/CompileAssembly/Debug/ActiveBuildTarget _F5")]
         public static void CompileDllActiveTargetDebug()
         {
             var target = EditorUserBuildSettings.activeBuildTarget;
@@ -100,7 +101,6 @@ namespace meltyStars.Editor
                 allScripts.Add(script.FullName);
             }
             string dllPath = Path.Combine(GetDllBuildOutputDirByTarget(target), "Hotfix.dll");
-            MSLogger.LogError(dllPath);
             CreateDirIfNotExists(GetDllBuildOutputDirByTarget(target));
 
             AssemblyBuilder assemblyBuilder = new AssemblyBuilder(dllPath, allScripts.ToArray());
@@ -112,18 +112,32 @@ namespace meltyStars.Editor
             assemblyBuilder.flags = AssemblyBuilderFlags.None;
             assemblyBuilder.referencesOptions = ReferencesOptions.UseEngineModules;
             assemblyBuilder.buildTarget = target;
-            assemblyBuilder.buildStarted  += path => MSLogger.LogInfo($"Start Building Assembly : {path}......");
+            assemblyBuilder.buildStarted  += path => MSLogger.LogInfo($"Compiling Assembly : {path}......");
             assemblyBuilder.buildFinished += (path, complierMessages) => 
             {
                 var warnings = complierMessages.Where(message => message.type == CompilerMessageType.Warning).ToList();
                 var errors = complierMessages.Where(message => message.type == CompilerMessageType.Error).ToList();
                 warnings.ForEach(warning => MSLogger.LogWarning(warning.message));
                 errors.ForEach(error => MSLogger.LogError(error.message));
+                MSLogger.LogInfo("Compiling finished!");
             };
             if (!assemblyBuilder.Build())
             {
                 MSLogger.LogError($"Build Assembly Failed : {assemblyBuilder.assemblyPath}");
             }
+
+            AfterCompiling(target);
+        }
+        public static void AfterCompiling(BuildTarget target)
+        {
+            while (EditorApplication.isCompiling)
+            {
+                MSLogger.LogWarning("At least one assembly is compiling, please wait......");
+                Thread.Sleep(500);
+            }
+
+            CopyDllsToAssetsMenu(GetDllBuildOutputDirByTarget(target), GetDllBytesOutputDirByTarget(target));
+            ShowNotificationOnGameView("Compile Assembly Finished");
         }
         /// <summary>
         /// 在这里修改热更新dll列表
@@ -134,18 +148,26 @@ namespace meltyStars.Editor
             CreateDirIfNotExists(bytesDir);
             List<string> hotfixDlls = new List<string>()
             {
-                "meltyStars.Hotfix.dll"
+                "Hotfix"
             };
-            hotfixDlls.ForEach(dll =>
+            hotfixDlls.ForEach(ass =>
             {
-                string dllOrigin = $"{buildPath}/{dll}";
-                string dllBytes = $"{bytesDir}/{dll}.bytes";
+                string dllOrigin = $"{buildPath}/{ass}.dll";
+                string pdbOrigin = $"{buildPath}/{ass}.pdb";
+                string dllBytes = $"{bytesDir}/{ass}.dll.bytes";
+                string pdbBytes = $"{bytesDir}/{ass}.pdb.bytes";
                 File.Copy(dllOrigin, dllBytes, true);
+                File.Copy(pdbOrigin, pdbBytes, true);
                 //拷贝一份到StreamingAssets
-                File.Copy(dllOrigin, $"{Application.streamingAssetsPath}/{dll}.bytes", true);
+                File.Copy(dllOrigin, $"{Application.streamingAssetsPath}\\{ass}.dll.bytes", true);
+                File.Copy(pdbOrigin, $"{Application.streamingAssetsPath}\\{ass}.pdb.bytes", true);
             });
             AssetDatabase.Refresh();
         }
-
+        private static void ShowNotificationOnGameView(string notification)
+        {
+            EditorWindow gameView = EditorWindow.GetWindow(typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView"));
+            gameView?.ShowNotification(new GUIContent(notification));
+        }
     }
 }

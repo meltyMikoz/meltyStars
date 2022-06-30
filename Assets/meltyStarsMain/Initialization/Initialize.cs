@@ -25,7 +25,7 @@ namespace meltyStars
             else
             {
                 //编辑器内dll调试
-                var bytes = File.ReadAllBytes($"{Application.streamingAssetsPath}/meltyStars.Hotfix.dll.bytes");
+                var bytes = File.ReadAllBytes($"{Application.streamingAssetsPath}/Hotfix.dll.bytes");
                 var ass = System.Reflection.Assembly.Load(bytes);
                 var type = ass.GetType("meltyStars.meltyStarsHotfixInitialize");
                 var initialize = type.GetMethod("Init");
@@ -33,7 +33,7 @@ namespace meltyStars
             }
 #else
             //打包后通过反射调用
-            var bytes = File.ReadAllBytes($"{Application.streamingAssetsPath}/meltyStars.Hotfix.dll.bytes");
+            var bytes = File.ReadAllBytes($"{Application.streamingAssetsPath}/Hotfix.dll.bytes");
             var ass = System.Reflection.Assembly.Load(bytes);
             var type = ass.GetType("meltyStars.meltyStarsHotfixInitialize");
             var initialize = type.GetMethod("Init");
