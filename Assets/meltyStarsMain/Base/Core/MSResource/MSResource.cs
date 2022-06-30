@@ -10,6 +10,7 @@ namespace meltyStars
 {
     public class MSResource
     {
+        public static string ResPath = "Assets/ResBundles/";
         public static TObject Load<TObject>(string path) where TObject : UnityEngine.Object
         {
             var msHandle = MSResourceRequestHandle<TObject>.CreateHandle(Addressables.LoadAssetAsync<TObject>(path));
