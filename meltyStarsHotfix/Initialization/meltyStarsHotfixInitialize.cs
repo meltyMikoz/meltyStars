@@ -22,7 +22,6 @@ namespace meltyStars
             MSLogger.LogInfo("Initialize");
             MSLogger.LogWarning("Warning");
             MSLogger.LogError("Error");
-            GameObject.Find("Text").GetComponent<UnityEngine.UI.Text>().text = "After";
 
             var g = await UpdateTest.TestTask();
 

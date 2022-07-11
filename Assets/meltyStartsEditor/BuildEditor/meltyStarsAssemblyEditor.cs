@@ -109,7 +109,7 @@ namespace meltyStars.Editor
             //assemblyBuilder.additionalReferences = null;
             assemblyBuilder.compilerOptions.CodeOptimization = codeOptimization;
             assemblyBuilder.compilerOptions.ApiCompatibilityLevel = PlayerSettings.GetApiCompatibilityLevel(buildTargetGroup);
-            assemblyBuilder.flags = AssemblyBuilderFlags.None;
+            assemblyBuilder.flags = AssemblyBuilderFlags.DevelopmentBuild;
             assemblyBuilder.referencesOptions = ReferencesOptions.UseEngineModules;
             assemblyBuilder.buildTarget = target;
             assemblyBuilder.buildStarted  += path => MSLogger.LogInfo($"Compiling Assembly : {path}......");
@@ -166,8 +166,8 @@ namespace meltyStars.Editor
         }
         private static void ShowNotificationOnGameView(string notification)
         {
-            EditorWindow gameView = EditorWindow.GetWindow(typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView"));
-            gameView?.ShowNotification(new GUIContent(notification));
+            EditorWindow consoleView = EditorWindow.GetWindow(typeof(EditorWindow).Assembly.GetType("UnityEditor.ConsoleWindow"));
+            consoleView?.ShowNotification(new GUIContent(notification));
         }
     }
 }
