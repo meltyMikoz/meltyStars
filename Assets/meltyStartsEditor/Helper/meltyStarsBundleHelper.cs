@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace meltyStars.Editor
+namespace MeltyStars.Editor
 {
     public class meltyStarsBundleHelper
     {

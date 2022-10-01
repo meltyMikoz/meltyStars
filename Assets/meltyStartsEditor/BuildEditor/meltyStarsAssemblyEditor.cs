@@ -8,7 +8,7 @@ using UnityEditor.Compilation;
 using System.Linq;
 using System.Threading;
 
-namespace meltyStars.Editor
+namespace MeltyStars.Editor
 {
     public class meltyStarsAssemblyEditor
     {
@@ -112,18 +112,18 @@ namespace meltyStars.Editor
             assemblyBuilder.flags = AssemblyBuilderFlags.DevelopmentBuild;
             assemblyBuilder.referencesOptions = ReferencesOptions.UseEngineModules;
             assemblyBuilder.buildTarget = target;
-            assemblyBuilder.buildStarted  += path => MSLogger.LogInfo($"Compiling Assembly : {path}......");
+            assemblyBuilder.buildStarted  += path => StarLogger.LogInfo($"Compiling Assembly : {path}......");
             assemblyBuilder.buildFinished += (path, complierMessages) => 
             {
                 var warnings = complierMessages.Where(message => message.type == CompilerMessageType.Warning).ToList();
                 var errors = complierMessages.Where(message => message.type == CompilerMessageType.Error).ToList();
-                warnings.ForEach(warning => MSLogger.LogWarning(warning.message));
-                errors.ForEach(error => MSLogger.LogError(error.message));
-                MSLogger.LogInfo("Compiling finished!");
+                warnings.ForEach(warning => StarLogger.LogWarning(warning.message));
+                errors.ForEach(error => StarLogger.LogError(error.message));
+                StarLogger.LogInfo("Compiling finished!");
             };
             if (!assemblyBuilder.Build())
             {
-                MSLogger.LogError($"Build Assembly Failed : {assemblyBuilder.assemblyPath}");
+                StarLogger.LogError($"Build Assembly Failed : {assemblyBuilder.assemblyPath}");
             }
 
             AfterCompiling(target);
@@ -132,7 +132,7 @@ namespace meltyStars.Editor
         {
             while (EditorApplication.isCompiling)
             {
-                MSLogger.LogWarning("At least one assembly is compiling, please wait......");
+                StarLogger.LogWarning("At least one assembly is compiling, please wait......");
                 Thread.Sleep(500);
             }
 

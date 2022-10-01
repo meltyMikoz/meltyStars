@@ -1,0 +1,62 @@
+using System;
+using MeltyStars;
+using MeltyStars.UI;
+using UnityEngine;
+using UnityEngine.U2D;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+
+namespace #NameSpaceName#
+{
+    public partial class #ClassName# : AUIWindow
+    {
+        public override string UIWindowAssetName => "#UIWindowAssetName#";
+        public override Type UIWindowViewType => typeof(#UIWindowViewName#);
+        public #UIWindowViewName# View => UIView as #UIWindowViewName#;
+        protected override void OnAfterHideCore()
+        {
+            
+        }
+        protected override void OnAfterShowCore(object args)
+        {
+            
+        }
+        protected override async UniTask OnBeforeHideCore()
+        {
+            await UniTask.Yield();
+        }
+        protected override async UniTask OnBeforeShowCore(object args)
+        {
+            await UniTask.Yield();
+        }
+        protected override void OnInitCore()
+        {
+
+        }
+        protected override void OnUpdateCore()
+        {
+
+        }
+    }
+    public partial class #ClassName#
+    {
+        //将响应事件写在如下区域或自行新建脚本写在分部类中
+        //请将响应事件按照格式声明
+        //Tip：请将事件类型声明为public
+        //public class TestUIEventHandler : AUIEventHandler<EventType.OnEnterGame>
+        //{
+            //protected override void Execute(AUIWindow window, EventType.OnEnterGame eventType)
+            //{
+                //window.OnUpdate(eventType);
+            //}
+        //}
+        //public class TestUIEventHandler : AUIEventHandler<EventType.OnEnterGame, WindowType>
+        //{
+            //protected override void Execute(WindowType window, EventType.OnEnterGame eventType)
+            //{
+                //window.OnUpdate(eventType);
+            //}
+        //}
+    }
+}

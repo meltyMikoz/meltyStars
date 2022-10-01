@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace meltyStars
+namespace MeltyStars
 {
     public class meltyStarsHotfixInitialize : HotFixInitialize
     {
@@ -19,9 +19,9 @@ namespace meltyStars
         /// </summary>
         public async static void Init()
         {
-            MSLogger.LogInfo("Initialize");
-            MSLogger.LogWarning("Warning");
-            MSLogger.LogError("Error");
+            StarLogger.LogInfo("Initialize");
+            StarLogger.LogWarning("Warning");
+            StarLogger.LogError("Error");
 
             var g = await UpdateTest.TestTask();
 

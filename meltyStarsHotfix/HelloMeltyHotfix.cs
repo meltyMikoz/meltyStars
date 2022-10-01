@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace meltyStars.Hotfix
+namespace MeltyStars.Hotfix
 {
     public class HelloMeltyHotfix
     {

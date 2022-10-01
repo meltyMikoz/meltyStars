@@ -1,0 +1,15 @@
+using UnityEngine;
+using UnityEngine.UI;
+using meltyStars;
+using meltyStars.UI;
+
+namespace #NameSpaceName#
+{
+    public class #ClassName# : AUIWindowView
+    {
+        public #ClassName#(Transform uiTransform) : base(uiTransform)
+        {
+        }
+        #BindCode#
+    }
+}

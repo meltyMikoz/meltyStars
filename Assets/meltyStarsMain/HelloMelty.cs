@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using System.IO;
 
-namespace meltyStars.Main
+namespace MeltyStars.Main
 {
     public class HelloMelty : MonoBehaviour
     {
