@@ -1,5 +1,5 @@
 {
-    "name": "meltyStars.Main",
+    "name": "MeltyStars.Main",
     "rootNamespace": "",
     "references": [
         "GUID:3d360f92e3fc17f44afcd05c61d87c93",
@@ -11,7 +11,8 @@
         "GUID:5c01796d064528144a599661eaab93a6",
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:2ca9787240532fe4dbcf7cde747d0025",
-        "GUID:c6cae76e8c74388418c672a50478b829"
+        "GUID:c6cae76e8c74388418c672a50478b829",
+        "GUID:4307f53044263cf4b835bd812fc161a4"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
