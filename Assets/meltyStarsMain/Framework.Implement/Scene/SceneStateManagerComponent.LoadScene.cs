@@ -4,7 +4,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using UnityEngine.SceneManagement;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public partial class SceneStateManagerComponent
     {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-namespace MeltyStars.UI
+namespace KuusouEngine.UI
 {
     public abstract partial class AUIWindow
     {

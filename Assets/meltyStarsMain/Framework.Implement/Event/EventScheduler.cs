@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public class EventScheduler : SingletonFor<EventScheduler>
     {

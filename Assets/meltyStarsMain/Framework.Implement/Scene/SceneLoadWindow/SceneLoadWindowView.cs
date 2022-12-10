@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using MeltyStars;
-using MeltyStars.UI;
+using KuusouEngine;
+using KuusouEngine.UI;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public class SceneLoadWindowView : AUIWindowView
     {
         public SceneLoadWindowView(Transform uiTransform) : base(uiTransform)
         {
         }
-        
+
 
 
     }

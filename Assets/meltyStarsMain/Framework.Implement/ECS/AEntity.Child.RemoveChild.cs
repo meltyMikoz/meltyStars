@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public abstract partial class AEntity
     {

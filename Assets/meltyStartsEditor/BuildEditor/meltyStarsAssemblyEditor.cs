@@ -8,7 +8,7 @@ using UnityEditor.Compilation;
 using System.Linq;
 using System.Threading;
 
-namespace MeltyStars.Editor
+namespace KuusouEngine.Editor
 {
     public class meltyStarsAssemblyEditor
     {

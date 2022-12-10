@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace MeltyStars.UI
+namespace KuusouEngine.UI
 {
     public partial class UIManagerComponent : AComponent
     {

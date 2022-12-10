@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace MeltyStars.UI
+namespace KuusouEngine.UI
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class UIEventAttribute : AttributeBase

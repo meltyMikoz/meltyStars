@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeltyStars.Collections.Generic
+namespace KuusouEngine.Collections.Generic
 {
     public class StackList<T> : List<T>
     {
         public T Pop()
         {
             if (this.Count == 0)
-                throw new MeltyStarsException($"StackList is Empty, Generic type is {typeof(T)}");
+                throw new KuusouEngineException($"StackList is Empty, Generic type is {typeof(T)}");
             T item = this[Count - 1];
             this.RemoveAt(Count - 1);
             return item;
@@ -20,7 +20,7 @@ namespace MeltyStars.Collections.Generic
         public T Peek()
         {
             if (this.Count == 0)
-                throw new MeltyStarsException($"StackList is Empty, Generic type is {typeof(T)}");
+                throw new KuusouEngineException($"StackList is Empty, Generic type is {typeof(T)}");
             return this[Count - 1];
         }
         public void Push(T item)

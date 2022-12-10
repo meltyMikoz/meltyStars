@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using MeltyStars.UI;
+using KuusouEngine.UI;
 using SyntheticWatermelonLikeGame;
 using DG.Tweening;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public partial class SceneStateManagerComponent : AComponent, IAwake, IUpdate, ILateUpdate, IFixedUpdate, IDestroy
     {

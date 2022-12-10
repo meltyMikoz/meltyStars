@@ -5,9 +5,9 @@ using System;
 using SyntheticWatermelonLikeGame;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
-using MeltyStars.UI;
+using KuusouEngine.UI;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public class App : AEntity, IAwake
     {

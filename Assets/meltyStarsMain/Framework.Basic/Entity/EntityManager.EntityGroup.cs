@@ -1,21 +1,24 @@
 using System;
 using System.Collections.Generic;
 
-namespace MeltyStars.FrameworkBasic.Entity
+namespace KuusouEngine.EngineBasic.Entity
 {
-    internal partial class EntityManager
+    internal sealed partial class EntityManager
     {
         /// <summary>
         /// 实体组
         /// </summary>
-        private class EntityGroup : IEntityGroup
+        private sealed class EntityGroup : IEntityGroup
         {
             private string _name;
+            private IEntityGroupHelper _helper;
             private readonly List<IEntity> _entities;
-            public EntityGroup(string name)
+            public EntityGroup(string entityGroupName, IEntityGroupHelper entityGroupHelper)
             {
-                this._name = name;
+                this._name = entityGroupName;
+                this._helper = entityGroupHelper;
                 this._entities = new List<IEntity>();
+                this._helper.CreateEntityGroup(entityGroupName);
             }
             /// <summary>
             /// 实体组名称
@@ -39,6 +42,13 @@ namespace MeltyStars.FrameworkBasic.Entity
                     return this._entities.Count;
                 }
             }
+            public IEntityGroupHelper Helper
+            {
+                get
+                {
+                    return this._helper;
+                }
+            }
             /// <summary>
             /// 实体组获取所有实体
             /// </summary>
@@ -51,9 +61,13 @@ namespace MeltyStars.FrameworkBasic.Entity
             /// 实体组获取所有实体
             /// </summary>
             /// <param name="results">目标容器</param>
-            public void GetAllEntities(out List<IEntity> results)
+            public void GetAllEntities(List<IEntity> results)
             {
-                results = new List<IEntity>(this._entities.Count);
+                if (results is null)
+                {
+                    return;
+                }
+                results.Clear();
                 foreach (IEntity entity in this._entities)
                 {
                     results.Add(entity);
@@ -107,7 +121,7 @@ namespace MeltyStars.FrameworkBasic.Entity
             {
                 foreach (IEntity entity in this._entities)
                 {
-                    if (entity.InstanceId == entityId)
+                    if (entity.Id == entityId)
                     {
                         return entity;
                     }
@@ -123,7 +137,7 @@ namespace MeltyStars.FrameworkBasic.Entity
             {
                 foreach (IEntity entity in this._entities)
                 {
-                    if (entity.InstanceId == entityId)
+                    if (entity.Id == entityId)
                     {
                         return true;
                     }
@@ -136,7 +150,12 @@ namespace MeltyStars.FrameworkBasic.Entity
             /// <param name="entity">实体实例</param>
             public void AddEntity(IEntity entity)
             {
+                if (entity is null)
+                {
+                    return;
+                }
                 this._entities.Add(entity);
+                this._helper.AddEntity(entity);
             }
             /// <summary>
             /// 实体组移除实体
@@ -144,11 +163,28 @@ namespace MeltyStars.FrameworkBasic.Entity
             /// <param name="entity">实体实例</param>
             public void RemoveEntity(IEntity entity)
             {
+                if (entity is null)
+                {
+                    return;
+                }
                 if (!this._entities.Contains(entity))
                 {
                     return;
                 }
                 this._entities.Remove(entity);
+                this._helper.RemoveEntity(entity);
+            }
+            /// <summary>
+            /// 实体组设置辅助器
+            /// </summary>
+            /// <param name="entityGroupHelper">实体辅助器</param>
+            public void SetEntityGroupHelper(IEntityGroupHelper entityGroupHelper)
+            {
+                if (entityGroupHelper is null)
+                {
+                    return;
+                }
+                this._helper = entityGroupHelper;
             }
         }
     }

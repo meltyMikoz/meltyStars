@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public partial class InputScheduler : SingletonFor<InputScheduler>
     {

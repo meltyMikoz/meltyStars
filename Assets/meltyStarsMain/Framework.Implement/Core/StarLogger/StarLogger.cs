@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     /// <summary>
     /// 扩展日志

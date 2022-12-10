@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-namespace MeltyStars.UI
+namespace KuusouEngine.UI
 {
     public partial class UIManagerComponent
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public class UICodeSpawnerEditorWindow : EditorWindow
     {

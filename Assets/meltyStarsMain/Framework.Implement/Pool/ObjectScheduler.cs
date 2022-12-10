@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public partial class ObjectScheduler : SingletonFor<ObjectScheduler>
     {

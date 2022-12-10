@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-namespace MeltyStars.FrameworkBasic.Entity
+namespace KuusouEngine.EngineBasic.Entity
 {
     public interface IEntityGroup
     {
@@ -17,6 +17,14 @@ namespace MeltyStars.FrameworkBasic.Entity
         /// </summary>
         /// <value></value>
         int EntityCount
+        {
+            get;
+        }
+        /// <summary>
+        /// 实体组辅助器
+        /// </summary>
+        /// <value></value>
+        IEntityGroupHelper Helper
         {
             get;
         }
@@ -55,6 +63,11 @@ namespace MeltyStars.FrameworkBasic.Entity
         /// 实体组获取所有实体
         /// </summary>
         /// <param name="results">目标容器</param>
-        void GetAllEntities(out List<IEntity> results);
+        void GetAllEntities(List<IEntity> results);
+        /// <summary>
+        /// 实体组设置辅助器
+        /// </summary>
+        /// <param name="entityGroupHelper">实体辅助器</param>
+        void SetEntityGroupHelper(IEntityGroupHelper entityGroupHelper);
     }
 }

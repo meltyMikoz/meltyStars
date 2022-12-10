@@ -1,6 +1,6 @@
 using System;
 
-namespace MeltyStars.FrameworkBasic.Fsm
+namespace KuusouEngine.EngineBasic.Fsm
 {
     /// <summary>
     /// 有限状态机接口

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public enum E_RuntimeDebugType
     {

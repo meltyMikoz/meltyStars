@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public abstract class AComponent : AEntity
     {

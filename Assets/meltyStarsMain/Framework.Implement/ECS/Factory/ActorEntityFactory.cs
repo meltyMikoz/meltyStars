@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MeltyStars;
+using KuusouEngine;
 using System;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public class GameActorEntityFactory
     {

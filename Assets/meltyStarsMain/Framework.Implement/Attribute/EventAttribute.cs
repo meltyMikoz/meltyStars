@@ -1,6 +1,6 @@
 using System;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class EventAttribute : AttributeBase

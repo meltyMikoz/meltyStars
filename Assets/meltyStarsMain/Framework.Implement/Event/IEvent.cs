@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public interface IEventHandler
     {

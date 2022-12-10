@@ -7,7 +7,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public class AddressableAssetScheduler : SingletonFor<AddressableAssetScheduler>
     {

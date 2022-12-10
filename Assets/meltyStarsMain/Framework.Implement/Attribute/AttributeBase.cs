@@ -1,6 +1,6 @@
 using System;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public abstract class AttributeBase : Attribute
     {

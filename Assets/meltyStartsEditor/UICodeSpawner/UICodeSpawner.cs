@@ -7,7 +7,7 @@ using System.Text;
 using System;
 using UnityEditor;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public class UICodeSpawner
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     /// <summary>
     /// 富文本转化工具

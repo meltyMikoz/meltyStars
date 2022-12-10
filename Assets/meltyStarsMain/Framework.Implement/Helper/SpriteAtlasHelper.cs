@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public static class SpriteAtlasHelper
     {

@@ -1,4 +1,4 @@
-namespace MeltyStars.FrameworkBasic.Entity
+namespace KuusouEngine.EngineBasic.Entity
 {
     /// <summary>
     /// 实体接口
@@ -6,26 +6,18 @@ namespace MeltyStars.FrameworkBasic.Entity
     public interface IEntity
     {
         /// <summary>
-        /// 实体名称
-        /// </summary>
-        /// <value></value>
-        string Name
-        {
-            get;
-        }
-        /// <summary>
-        /// 实体完整名称
-        /// </summary>
-        /// <value></value>
-        string FullName
-        {
-            get;
-        }
-        /// <summary>
         /// 实体实例Id
         /// </summary>
         /// <value></value>
-        int InstanceId
+        int Id
+        {
+            get;
+        }
+        /// <summary>
+        /// 实体辅助器
+        /// </summary>
+        /// <value></value>
+        IEntityHelper EntityHelper
         {
             get;
         }
@@ -38,23 +30,16 @@ namespace MeltyStars.FrameworkBasic.Entity
             get;
         }
         /// <summary>
-        /// 实体是否激活(启用)
-        /// </summary>
-        /// <value></value>
-        bool Enabled
-        {
-            get;
-        }
-        /// <summary>
         /// 实体初始化
         /// </summary>
         /// <param name="entityInstanceId">实体实例Id</param>
         /// <param name="userData">用户自定义数据</param>
-        void OnInit(int entityInstanceId, object userData);
+        void OnInit(int entityId, IEntityHelper entityHelper, object userData);
         /// <summary>
-        /// 实体回收
+        /// 实体销毁(回收)
         /// </summary>
-        void OnRecycle();
+        /// <param name="isShutDown">是否为实体管理器关闭时触发</param>
+        void OnDestroy(bool isShutDown);
         /// <summary>
         /// 实体启用
         /// </summary>
@@ -63,9 +48,8 @@ namespace MeltyStars.FrameworkBasic.Entity
         /// <summary>
         /// 实体关闭
         /// </summary>
-        /// <param name="managerShutDown">是否为实体管理器关闭时触发</param>
         /// <param name="userData">用户自定义数据</param>
-        void OnDisable(bool managerShutDown, object userData);
+        void OnDisable(object userData);
         /// <summary>
         /// 实体被附加子实体
         /// </summary>
@@ -96,5 +80,10 @@ namespace MeltyStars.FrameworkBasic.Entity
         /// <param name="elapseFrequency">时间流逝频率(以秒为单位)</param>
         /// <param name="elapseFrequencySteady">真实时间流逝频率(以秒为单位)</param>
         void OnUpdate(float elapseFrequency, float elapseFrequencyReally);
+        /// <summary>
+        /// 实体设置实体辅助器
+        /// </summary>
+        /// <param name="entityHelper">实体辅助器</param>
+        void SetEntityHelper(IEntityHelper entityHelper);
     }
 }

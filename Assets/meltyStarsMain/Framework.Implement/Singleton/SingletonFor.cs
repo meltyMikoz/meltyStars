@@ -1,6 +1,6 @@
 using System;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public abstract class SingletonFor<T> where T : class
     {

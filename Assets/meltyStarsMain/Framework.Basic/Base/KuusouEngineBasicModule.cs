@@ -1,6 +1,9 @@
-namespace MeltyStars
+namespace KuusouEngine
 {
-    internal abstract class FrameworkBasicModule
+    /// <summary>
+    /// 框架基础模块抽象类
+    /// </summary>
+    internal abstract class KuusouEngineBasicModule
     {
         /// <summary>
         /// 模块优先级
@@ -9,14 +12,13 @@ namespace MeltyStars
         internal int Priority
         {
             get;
-            private set;
         }
         /// <summary>
         /// 模块轮询
         /// </summary>
         /// <param name="elapseFrequency">时间流逝频率(以秒为单位)</param>
         /// <param name="elapseFrequencySteady">真实时间流逝频率(以秒为单位)</param>
-        internal abstract void OnUpdate(float elapseFrequency, float elapseFrequencyReally);
+        internal abstract void Update(float elapseFrequency, float elapseFrequencyReally);
         /// <summary>
         /// 模块关闭
         /// </summary>

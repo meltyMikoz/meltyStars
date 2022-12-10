@@ -1,5 +1,5 @@
 using UnityEngine;
-using MeltyStars;
+using KuusouEngine;
 using UnityEngine.U2D;
 
 /// <summary>

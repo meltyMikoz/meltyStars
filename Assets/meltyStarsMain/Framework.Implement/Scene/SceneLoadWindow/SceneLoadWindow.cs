@@ -1,12 +1,12 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using MeltyStars;
-using MeltyStars.UI;
+using KuusouEngine;
+using KuusouEngine.UI;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public partial class SceneLoadWindow : AUIWindow
     {

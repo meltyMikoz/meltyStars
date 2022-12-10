@@ -6,7 +6,7 @@ using UnityEngine;
 using System;
 using System.Threading.Tasks;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public class MSResource
     {

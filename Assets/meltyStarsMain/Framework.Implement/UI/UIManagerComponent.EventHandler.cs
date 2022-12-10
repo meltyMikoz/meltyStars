@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MeltyStars.UI
+namespace KuusouEngine.UI
 {
     public partial class UIManagerComponent
     {

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MeltyStars
+namespace KuusouEngine
 {
     public abstract partial class AEntity
     {
