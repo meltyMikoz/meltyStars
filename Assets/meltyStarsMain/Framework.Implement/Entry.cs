@@ -1,37 +1,29 @@
 using UnityEngine;
-using KuusouEngine;
 using UnityEngine.U2D;
-
 /// <summary>
 /// 入口
 /// </summary>
-namespace SyntheticWatermelonLikeGame
+namespace KuusouEngine.EngineImplement
 {
     public class Entry : MonoBehaviour
     {
+        public static EntityManagerProxy EntityManager
+        {
+            get;
+            private set;
+        }
         void Awake()
         {
             DontDestroyOnLoad(this);
+            InitBuiltinManagerProxy();
         }
         void OnEnable()
         {
             SpriteAtlasManager.atlasRequested += OnSpriteAtlasRequest;
         }
-        void Start()
-        {
-            App.Instance.Awake();
-        }
         void Update()
         {
-            App.Instance.Update();
-        }
-        void LateUpdate()
-        {
-            App.Instance.LateUpdate();
-        }
-        void FixedUpdate()
-        {
-            App.Instance.FixedUpdate();
+            KuusouEngineEntry.Update(Time.deltaTime, Time.unscaledDeltaTime);
         }
         void OnDisable()
         {
@@ -39,12 +31,16 @@ namespace SyntheticWatermelonLikeGame
         }
         void OnDestroy()
         {
-            App.Instance.Destroy(false);
+            KuusouEngineEntry.ShutDown();
         }
         void OnSpriteAtlasRequest(string name, System.Action<SpriteAtlas> callBack)
         {
             var spriteAtlas = AddressableAssetScheduler.Instance.LoadAsset<SpriteAtlas>(name);
             callBack(spriteAtlas);
+        }
+        private void InitBuiltinManagerProxy()
+        { 
+            EntityManager = transform.Find("Builtin/EntityManagerProxy").GetComponent<EntityManagerProxy>();
         }
     }
 }

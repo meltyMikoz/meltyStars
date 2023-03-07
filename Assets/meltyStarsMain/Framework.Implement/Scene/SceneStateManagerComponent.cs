@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using KuusouEngine.UI;
-using SyntheticWatermelonLikeGame;
 using DG.Tweening;
 
 namespace KuusouEngine

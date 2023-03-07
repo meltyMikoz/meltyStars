@@ -12,21 +12,20 @@ namespace KuusouEngine.EngineBasic.Entity
         IEntity ParentEntity
         {
             get;
-            set;
-        }
-        IEntityInfo ParentEntityInfo
-        {
-            get;
-            set;
         }
         EntityUpdateMode UpdateMode
         {
             get;
             set;
         }
+        IComponent[] Components 
+        { 
+            get; 
+        }
         int ChildEntityCount
         {
             get;
         }
+        void Update(float elapseFrequency, float elapseFrequencyReally);
     }
 }

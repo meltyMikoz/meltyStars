@@ -6,7 +6,7 @@ namespace KuusouEngine.EngineBasic.Entity
     public enum EntityUpdateMode
     {
         /// <summary>
-        /// 普通(跟随父级，父级关闭则停止轮询)
+        /// 普通(跟随父级，父级失活则停止轮询)
         /// </summary>
         Normal,
         /// <summary>

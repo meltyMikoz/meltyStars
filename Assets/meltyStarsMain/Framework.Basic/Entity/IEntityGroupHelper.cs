@@ -14,11 +14,11 @@ namespace KuusouEngine.EngineBasic.Entity
         /// 实体组添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        void AddEntity(IEntity entity);
+        void AddEntity(string entityGroupName, IEntity entity);
         /// <summary>
         /// 实体组移除实体
         /// </summary>
         /// <param name="entity">实体</param>
-        void RemoveEntity(IEntity entity);
+        void RemoveEntity(string entityGroupName, IEntity entity);
     }
 }

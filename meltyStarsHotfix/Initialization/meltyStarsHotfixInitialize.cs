@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using KuusouEngine;
 using UnityEngine;
 
 namespace MeltyStars

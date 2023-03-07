@@ -155,7 +155,7 @@ namespace KuusouEngine.EngineBasic.Entity
                     return;
                 }
                 this._entities.Add(entity);
-                this._helper.AddEntity(entity);
+                this._helper.AddEntity(this._name, entity);
             }
             /// <summary>
             /// 实体组移除实体
@@ -172,7 +172,7 @@ namespace KuusouEngine.EngineBasic.Entity
                     return;
                 }
                 this._entities.Remove(entity);
-                this._helper.RemoveEntity(entity);
+                this._helper.RemoveEntity(this._name, entity);
             }
             /// <summary>
             /// 实体组设置辅助器
@@ -185,6 +185,13 @@ namespace KuusouEngine.EngineBasic.Entity
                     return;
                 }
                 this._helper = entityGroupHelper;
+            }
+            public void Update(float elapseFrequency, float elapseFrequencyReally)
+            {
+                foreach (IEntity entity in this._entities)
+                {
+                    entity.EntityInfo.Update(elapseFrequency, elapseFrequencyReally);
+                }
             }
         }
     }

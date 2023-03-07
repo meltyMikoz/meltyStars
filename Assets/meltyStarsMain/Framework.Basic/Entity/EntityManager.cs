@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace KuusouEngine.EngineBasic.Entity
 {
@@ -7,14 +8,14 @@ namespace KuusouEngine.EngineBasic.Entity
     {
         private readonly Dictionary<int, EntityInfo> _entityInfos;
         private readonly Dictionary<string, EntityGroup> _entityGroups;
+        private readonly Dictionary<Type, ISystem> _entitySystems;
         private bool _isShutDown;
-        private int _serialNumber;
         public EntityManager()
         {
             this._entityInfos = new Dictionary<int, EntityInfo>();
             this._entityGroups = new Dictionary<string, EntityGroup>();
+            this._entitySystems = new Dictionary<Type, ISystem>();
             this._isShutDown = false;
-            this._serialNumber = 0;
         }
         public int EntityCount
         {
@@ -30,18 +31,32 @@ namespace KuusouEngine.EngineBasic.Entity
                 return this._entityGroups.Count;
             }
         }
-
         internal override void ShutDown()
         {
             this._isShutDown = true;
+            RecycleAllEntities();
             this._entityInfos.Clear();
             this._entityGroups.Clear();
+            this._entitySystems.Clear();
+        }
+        private void RecycleAllEntities()
+        {
+            int[] entityIds = new int[this._entityInfos.Count];
+            int index = 0;
+            foreach (KeyValuePair<int, EntityInfo> entityInfo in this._entityInfos)
+            {
+                entityIds[index++] = entityInfo.Key;
+            }
+            foreach (int id in entityIds)
+            {
+                RecycleEntity(id);
+            }
         }
         internal override void Update(float elapseFrequency, float elapseFrequencyReally)
         {
-            foreach (KeyValuePair<int, EntityInfo> entityInfo in this._entityInfos)
+            foreach (KeyValuePair<string, EntityGroup> entityGroup in this._entityGroups)
             {
-                entityInfo.Value.Update(elapseFrequency, elapseFrequencyReally);
+                entityGroup.Value.Update(elapseFrequency, elapseFrequencyReally);
             }
         }
         /// <summary>
@@ -102,10 +117,9 @@ namespace KuusouEngine.EngineBasic.Entity
             IEntity parentEntity = parentInfo.Entity;
             DetachEntity(childEntity.Id, userData);
             childInfo.ParentEntity = parentInfo.Entity;
-            childInfo.ParentEntityInfo = parentInfo;
             parentInfo.AddChildEntity(childEntity);
-            parentEntity.OnAttached(childEntity, userData);
-            childEntity.OnAttachTo(parentEntity, userData);
+            parentInfo.OnAttached(childEntity, userData);
+            childInfo.OnAttachTo(parentEntity, userData);
         }
 
         public void AttachEntity(IEntity childEntity, int parentEntityId)
@@ -170,50 +184,70 @@ namespace KuusouEngine.EngineBasic.Entity
             AttachEntity(childEntity, parentEntity, userData);
         }
 
-        public IEntity CreateEntity(Type entityType, int entityId, string entityGroupName, IEntityHelper entityHelper, object userData)
+        public IEntity CreateEntity(Type entityType, int entityId, string entityGroupName, object userData)
         {
             if (HasEntity(entityId))
             {
                 throw new KuusouEngineException("Entity Id is already used by an existing entity");
-            }
-            if (entityHelper is null)
-            {
-                throw new KuusouEngineException("Entity helper is invalid");
             }
             if (!HasEntityGroup(entityGroupName))
             {
                 throw new KuusouEngineException("Entity group is not exist");
             }
             IEntityGroup entityGroup = GetEntityGroup(entityGroupName);
-            return InternalCreateEntity(entityType, entityId, entityGroup, entityHelper, userData);
+            return InternalCreateEntity(entityType, entityId, entityGroup, userData);
         }
 
-        public IEntity CreateEntity(Type entityType, int entityId, IEntityGroup entityGroup, IEntityHelper entityHelper, object userData)
+        public IEntity CreateEntity(Type entityType, int entityId, IEntityGroup entityGroup, object userData)
         {
             if (HasEntity(entityId))
             {
                 throw new KuusouEngineException("Entity Id is already used by an existing entity");
             }
-            if (entityHelper is null)
-            {
-                throw new KuusouEngineException("Entity helper is invalid");
-            }
-            return InternalCreateEntity(entityType, entityId, entityGroup, entityHelper, userData);
+            return InternalCreateEntity(entityType, entityId, entityGroup, userData);
         }
 
-        private IEntity InternalCreateEntity(Type entityType, int entityId, IEntityGroup entityGroup, IEntityHelper entityHelper, object userData)
+        private IEntity InternalCreateEntity(Type entityType, int entityId, IEntityGroup entityGroup, object userData)
         {
             IEntity entity = Activator.CreateInstance(entityType) as IEntity;
             EntityInfo entityInfo = EntityInfo.Create(entity);
             (entityGroup as EntityGroup).AddEntity(entity);
-            entity.OnInit(entityId, entityHelper, userData);
             entityInfo.Status = EntityStatus.Inited;
             this._entityInfos.Add(entityId, entityInfo);
-            EnableEntity(entity);
+
+            ISystem system = GetSystem(entityType);
+            if (!(system is null))
+            {
+                entityInfo.SetSystem(system);
+            }
+
+            entityInfo.OnInit(entityGroup, userData);
+            ActivateEntity(entity);
             return entity;
         }
 
-        public void DestroyEntity(int entityId)
+        private ISystem GetSystem(Type entityType)
+        {
+            if (this._entitySystems.ContainsKey(entityType))
+            {
+                return this._entitySystems[entityType];
+            }
+            BindWithSystemAttribute bind = entityType.GetCustomAttribute(typeof(BindWithSystemAttribute), true) as BindWithSystemAttribute;
+            if (!(bind is null))
+            {
+                Type systemType = bind.SystemType;
+                if (!typeof(ISystem).IsAssignableFrom(systemType))
+                {
+                    throw new KuusouEngineException("System type is invalid");
+                }
+                ISystem system = Activator.CreateInstance(systemType) as ISystem;
+                this._entitySystems.Add(entityType, system);
+                return system;
+            }
+            return null;
+        }
+
+        public void RecycleEntity(int entityId)
         {
             EntityInfo entityInfo = GetEntityInfo(entityId);
             if (entityInfo is null)
@@ -227,17 +261,17 @@ namespace KuusouEngine.EngineBasic.Entity
             entityInfo.Status = EntityStatus.Destroyed;
             entityGroup.RemoveEntity(entity);
             this._entityInfos.Remove(entityId);
-            entity.OnDestroy(this._isShutDown);
+            entityInfo.OnRecycle(this._isShutDown);
             EntityInfo.Release(entityInfo);
         }
 
-        public void DestroyEntity(IEntity entity)
+        public void RecycleEntity(IEntity entity)
         {
             if (entity is null)
             {
                 throw new KuusouEngineException("Entity is invalid");
             }
-            DestroyEntity(entity.Id);
+            RecycleEntity(entity.Id);
         }
 
         public void DetachChildEntities(int parentEntityId)
@@ -301,10 +335,9 @@ namespace KuusouEngine.EngineBasic.Entity
             }
             IEntity childEntity = childInfo.Entity;
             childInfo.ParentEntity = null;
-            childInfo.ParentEntityInfo = null;
             parentInfo.RemoveChildEntity(childEntity);
-            parentEntity.OnDetached(childEntity, userData);
-            childEntity.OnDetachFrom(parentEntity, userData);
+            parentInfo.OnDetached(childEntity, userData);
+            childInfo.OnDetachFrom(parentEntity, userData);
         }
 
         public void DetachEntity(IEntity childEntity)
@@ -325,74 +358,74 @@ namespace KuusouEngine.EngineBasic.Entity
             DetachEntity(childEntity.Id, userData);
         }
 
-        public void DisableEntity(int entityId)
+        public void InactivateEntity(int entityId)
         {
-            DisableEntity(entityId, null);
+            InactivateEntity(entityId, null);
         }
 
-        public void DisableEntity(int entityId, object userData)
+        public void InactivateEntity(int entityId, object userData)
         {
             EntityInfo entityInfo = GetEntityInfo(entityId);
             if (entityInfo is null)
             {
                 throw new KuusouEngineException("Entity is not registered");
             }
-            entityInfo.Status &= ~EntityStatus.Enabled;
-            entityInfo.Status |= EntityStatus.Disabled;
-            entityInfo.Entity.OnDisable(userData);
+            entityInfo.Status &= ~EntityStatus.Actived;
+            entityInfo.Status |= EntityStatus.Inactived;
+            entityInfo.OnInactivate(userData);
         }
 
-        public void DisableEntity(IEntity entity)
+        public void InactivateEntity(IEntity entity)
         {
             if (entity is null)
             {
                 throw new KuusouEngineException("Entity is invalid");
             }
-            DisableEntity(entity.Id, null);
+            InactivateEntity(entity.Id, null);
         }
 
-        public void DisableEntity(IEntity entity, object userData)
+        public void InactivateEntity(IEntity entity, object userData)
         {
             if (entity is null)
             {
                 throw new KuusouEngineException("Entity is invalid");
             }
-            DisableEntity(entity.Id, userData);
+            InactivateEntity(entity.Id, userData);
         }
 
-        public void EnableEntity(int entityId)
+        public void ActivateEntity(int entityId)
         {
-            EnableEntity(entityId, null);
+            ActivateEntity(entityId, null);
         }
 
-        public void EnableEntity(int entityId, object userData)
+        public void ActivateEntity(int entityId, object userData)
         {
             EntityInfo entityInfo = GetEntityInfo(entityId);
             if (entityInfo is null)
             {
                 throw new KuusouEngineException("Entity is not registered");
             }
-            entityInfo.Status &= ~EntityStatus.Disabled;
-            entityInfo.Status |= EntityStatus.Enabled;
-            entityInfo.Entity.OnEnable(userData);
+            entityInfo.Status &= ~EntityStatus.Inactived;
+            entityInfo.Status |= EntityStatus.Actived;
+            entityInfo.OnActivate(userData);
         }
 
-        public void EnableEntity(IEntity entity)
+        public void ActivateEntity(IEntity entity)
         {
             if (entity is null)
             {
                 throw new KuusouEngineException("Entity is not registered");
             }
-            EnableEntity(entity.Id, null);
+            ActivateEntity(entity.Id, null);
         }
 
-        public void EnableEntity(IEntity entity, object userData)
+        public void ActivateEntity(IEntity entity, object userData)
         {
             if (entity is null)
             {
                 throw new KuusouEngineException("Entity is not registered");
             }
-            EnableEntity(entity.Id, userData);
+            ActivateEntity(entity.Id, userData);
         }
 
         public IEntityGroup[] GetAllEntityGroups()
@@ -541,19 +574,19 @@ namespace KuusouEngine.EngineBasic.Entity
             return this._entityGroups.ContainsKey(entityGroupName);
         }
 
-        public bool IsEnabled(int entityId)
+        public bool IsActived(int entityId)
         {
             EntityInfo entityInfo = GetEntityInfo(entityId);
             if (entityInfo is null)
             {
                 throw new KuusouEngineException("Entity is not registered");
             }
-            return (entityInfo.Status & EntityStatus.Enabled) == EntityStatus.Enabled;
+            return (entityInfo.Status & EntityStatus.Actived) == EntityStatus.Actived;
         }
 
-        public bool IsEnabled(IEntity entity)
+        public bool IsActived(IEntity entity)
         {
-            return IsEnabled(entity.Id);
+            return IsActived(entity.Id);
         }
 
         public bool IsValid(IEntity entity)
@@ -565,7 +598,7 @@ namespace KuusouEngine.EngineBasic.Entity
             return HasEntity(entity.Id);
         }
 
-        public void RegisterEntity(IEntity entity, string entityGroupName)
+        public void RegisterEntity(IEntity entity, string entityGroupName, object userData)
         {
             if (entity is null)
             {
@@ -584,9 +617,10 @@ namespace KuusouEngine.EngineBasic.Entity
                 throw new KuusouEngineException("Entity group is not exist");
             }
             EntityGroup entityGroup = GetEntityGroup(entityGroupName) as EntityGroup;
+            InternalRegisterEntity(entity, entityGroup, userData);
         }
 
-        public void RegisterEntity(IEntity entity, IEntityGroup entityGroup)
+        public void RegisterEntity(IEntity entity, IEntityGroup entityGroup, object userData)
         {
             if (entity is null)
             {
@@ -600,15 +634,96 @@ namespace KuusouEngine.EngineBasic.Entity
             {
                 throw new KuusouEngineException("Entity Id is already used by an existing entity");
             }
-            InternalRegisterEntity(entity, entityGroup);
+            InternalRegisterEntity(entity, entityGroup, userData);
         }
-        private void InternalRegisterEntity(IEntity entity, IEntityGroup entityGroup)
+        private void InternalRegisterEntity(IEntity entity, IEntityGroup entityGroup, object userData)
         {
             EntityGroup group = entityGroup as EntityGroup;
             EntityInfo entityInfo = EntityInfo.Create(entity);
             entityInfo.Status = EntityStatus.Unknown;
             this._entityInfos.Add(entity.Id, entityInfo);
             group.AddEntity(entity);
+
+            ISystem system = GetSystem(entity.GetType());
+            if (!(system is null))
+            {
+                entityInfo.SetSystem(system);
+            }
+            entityInfo.OnInit(entityGroup, userData);
+        }
+        public TComponent AddComponent<TComponent>(int entityId) where TComponent : class, IComponent
+        {
+            return AddComponent(entityId, typeof(TComponent)) as TComponent;
+        }
+
+        public IComponent AddComponent(int entityId, Type componentType)
+        {
+            EntityInfo entityInfo= GetEntityInfo(entityId);
+            if (entityInfo is null)
+            {
+                throw new KuusouEngineException("Target Entity is not registered");
+            }
+            return entityInfo.GetComponent(componentType);
+        }
+
+        public TComponent AddComponent<TComponent>(IEntity entity) where TComponent : class, IComponent
+        {
+            return AddComponent<TComponent>(entity.Id);
+        }
+
+        public IComponent AddComponent(IEntity entity, Type componentType)
+        {
+            return AddComponent(entity.Id, componentType);
+        }
+
+        public void RemoveComponent<TComponent>(int entityId)
+        {
+            RemoveComponent(entityId, typeof(TComponent));
+        }
+
+        public void RemoveComponent(int entityId, Type componentType)
+        {
+            EntityInfo entityInfo = GetEntityInfo(entityId);
+            if (entityInfo is null)
+            {
+                throw new KuusouEngineException("Target Entity is not registered");
+            }
+            entityInfo.RemoveComponent(componentType);
+        }
+
+        public void RemoveComponent<TComponent>(IEntity entity)
+        {
+            RemoveComponent<TComponent>(entity.Id);
+        }
+
+        public void RemoveComponent(IEntity entity, Type componentType)
+        {
+            RemoveComponent(entity.Id, componentType);
+        }
+
+        public TComponent GetComponent<TComponent>(int entityId) where TComponent : class, IComponent
+        {
+            return GetComponent(entityId, typeof(TComponent)) as TComponent;
+        }
+
+        public IComponent GetComponent(int entityId, Type componentType)
+        {
+            EntityInfo entityInfo = GetEntityInfo(entityId);
+            if (entityInfo is null)
+            {
+                throw new KuusouEngineException("Target Entity is not registered");
+            }
+            return entityInfo.GetComponent(componentType);
+        }
+
+        public TComponent GetComponent<TComponent>(IEntity entity) where TComponent : class, IComponent
+        {
+            return GetComponent<TComponent>(entity.Id);
+        }
+
+        public IComponent GetComponent(IEntity entity, Type componentType)
+        {
+            return GetComponent(entity.Id, componentType);
         }
     }
 }

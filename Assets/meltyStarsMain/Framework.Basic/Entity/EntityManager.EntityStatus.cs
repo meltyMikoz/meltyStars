@@ -20,13 +20,13 @@ namespace KuusouEngine.EngineBasic.Entity
             /// </summary>
             Inited = UnInited << 1,
             /// <summary>
-            /// 实体已启用
+            /// 实体已激活
             /// </summary>
-            Enabled = UnInited << 2,
+            Actived = UnInited << 2,
             /// <summary>
-            /// 实体已关闭
+            /// 实体已失活
             /// </summary>
-            Disabled = UnInited << 3,
+            Inactived = UnInited << 3,
             /// <summary>
             /// 实体已销毁
             /// </summary>

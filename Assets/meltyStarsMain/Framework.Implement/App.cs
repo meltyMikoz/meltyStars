@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 using System;
-using SyntheticWatermelonLikeGame;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
 using KuusouEngine.UI;

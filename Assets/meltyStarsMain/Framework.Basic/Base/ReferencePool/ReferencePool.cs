@@ -45,6 +45,18 @@ namespace KuusouEngine
             InternalCheckReferenceType(referenceType);
             GetReferenceCollection(referenceType).Release(reference);
         }
+        public static void ClearAll()
+        {
+            lock (s_referenceCollections)
+            {
+                foreach (KeyValuePair<Type, ReferenceCollection> referenceCollection in s_referenceCollections)
+                {
+                    referenceCollection.Value.RemoveAll();
+                }
+
+                s_referenceCollections.Clear();
+            }
+        }
         public static void Add<T>(int count) where T : class, IReference, new()
         {
             GetReferenceCollection(typeof(T)).Add<T>(count);
