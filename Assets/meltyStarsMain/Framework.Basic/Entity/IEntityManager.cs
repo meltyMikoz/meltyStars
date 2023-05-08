@@ -36,6 +36,12 @@ namespace KuusouEngine.EngineBasic.Entity
         /// <returns>是否合法</returns>
         bool IsValid(IEntity entity);
         /// <summary>
+        /// 获取尸体信息接口
+        /// </summary>
+        /// <param name="entityId"></param>
+        /// <returns></returns>
+        IEntityInfo GetEntityInfo(int entityId);
+        /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="entityId">实体Id</param>

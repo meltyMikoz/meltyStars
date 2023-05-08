@@ -12,6 +12,16 @@ namespace KuusouEngine.EngineImplement
             get;
             private set;
         }
+        public static FsmManagerProxy FsmManager 
+        { 
+            get; 
+            private set; 
+        }
+        public static EventManagerProxy EventManager
+        {
+            get;
+            private set;
+        }
         void Awake()
         {
             DontDestroyOnLoad(this);
@@ -31,7 +41,7 @@ namespace KuusouEngine.EngineImplement
         }
         void OnDestroy()
         {
-            KuusouEngineEntry.ShutDown();
+            KuusouEngineEntry.Shutdown();
         }
         void OnSpriteAtlasRequest(string name, System.Action<SpriteAtlas> callBack)
         {
@@ -41,6 +51,8 @@ namespace KuusouEngine.EngineImplement
         private void InitBuiltinManagerProxy()
         { 
             EntityManager = transform.Find("Builtin/EntityManagerProxy").GetComponent<EntityManagerProxy>();
+            FsmManager = transform.Find("Builtin/FsmManagerProxy").GetComponent<FsmManagerProxy>();
+            EventManager = transform.Find("Builtin/EventManagerProxy").GetComponent<EventManagerProxy>();
         }
     }
 }

@@ -4,10 +4,22 @@ namespace KuusouEngine.EngineImplement
 {
     public abstract class BuiltinManagerProxy<TManager> : MonoBehaviour where TManager : class
     {
-        protected TManager _manager;
-        protected virtual void Awake() 
+        private static TManager s_manager;
+        protected TManager _manager
         {
-            _manager = KuusouEngineEntry.GetModule<TManager>();
+            get
+            {
+                if (s_manager is null)
+                {
+                    s_manager = KuusouEngineEntry.GetModule<TManager>();
+                    OnInit();
+                }
+                return s_manager;
+            }
+        }
+        protected virtual void OnInit() 
+        { 
+
         }
     }
 }

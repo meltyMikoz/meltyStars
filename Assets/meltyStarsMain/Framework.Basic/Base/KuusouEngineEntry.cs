@@ -17,7 +17,7 @@ namespace KuusouEngine
                 module.Update(elapseFrequency, elapseFrequencyReally);
             }
         }
-        public static void ShutDown()
+        public static void Shutdown()
         {
             for (LinkedListNode<KuusouEngineBasicModule> current = s_kuusouEngineModules.Last; current != null; current = current.Previous)
             {

@@ -9,5 +9,6 @@ namespace KuusouEngine.EngineBasic.Entity
         { 
             SystemType = systemType;
         }
+        private BindWithSystemAttribute() { }
     }
 }

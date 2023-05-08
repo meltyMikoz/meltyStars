@@ -17,6 +17,13 @@ namespace KuusouEngine.EngineBasic.Entity
             this._entitySystems = new Dictionary<Type, ISystem>();
             this._isShutDown = false;
         }
+        internal override int Priority
+        {
+            get
+            {
+                return 1;
+            }
+        }
         public int EntityCount
         {
             get
@@ -59,12 +66,16 @@ namespace KuusouEngine.EngineBasic.Entity
                 entityGroup.Value.Update(elapseFrequency, elapseFrequencyReally);
             }
         }
+        public IEntityInfo GetEntityInfo(int entityId)
+        {
+            return InternalGetEntityInfo(entityId);
+        }
         /// <summary>
         /// 获取实体信息
         /// </summary>
         /// <param name="entityId">实体Id</param>
         /// <returns>实体信息</returns>
-        private EntityInfo GetEntityInfo(int entityId)
+        private EntityInfo InternalGetEntityInfo(int entityId)
         {
             EntityInfo entityInfo = null;
             if (this._entityInfos.TryGetValue(entityId, out entityInfo))
@@ -103,8 +114,8 @@ namespace KuusouEngine.EngineBasic.Entity
             {
                 throw new KuusouEngineException("Can not attach entity to the entity with a same id");
             }
-            EntityInfo childInfo = GetEntityInfo(childEntityId);
-            EntityInfo parentInfo = GetEntityInfo(parentEntityId);
+            EntityInfo childInfo = InternalGetEntityInfo(childEntityId);
+            EntityInfo parentInfo = InternalGetEntityInfo(parentEntityId);
             if (childInfo is null)
             {
                 throw new KuusouEngineException("Child entity is not registered");
@@ -249,7 +260,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public void RecycleEntity(int entityId)
         {
-            EntityInfo entityInfo = GetEntityInfo(entityId);
+            EntityInfo entityInfo = InternalGetEntityInfo(entityId);
             if (entityInfo is null)
             {
                 throw new KuusouEngineException("Entity is not registered");
@@ -281,7 +292,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public void DetachChildEntities(int parentEntityId, object userData)
         {
-            EntityInfo parentEntityInfo = GetEntityInfo(parentEntityId);
+            EntityInfo parentEntityInfo = InternalGetEntityInfo(parentEntityId);
             if (parentEntityInfo == null)
             {
                 throw new KuusouEngineException("Parent entity is not registered");
@@ -318,7 +329,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public void DetachEntity(int childEntityId, object userData)
         {
-            EntityInfo childInfo = GetEntityInfo(childEntityId);
+            EntityInfo childInfo = InternalGetEntityInfo(childEntityId);
             if (childInfo is null)
             {
                 throw new KuusouEngineException("Child entity is not registered");
@@ -328,7 +339,7 @@ namespace KuusouEngine.EngineBasic.Entity
             {
                 return;
             }
-            EntityInfo parentInfo = GetEntityInfo(parentEntity.Id);
+            EntityInfo parentInfo = InternalGetEntityInfo(parentEntity.Id);
             if (parentInfo is null)
             {
                 throw new KuusouEngineException("Parent entity is not registered");
@@ -365,7 +376,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public void InactivateEntity(int entityId, object userData)
         {
-            EntityInfo entityInfo = GetEntityInfo(entityId);
+            EntityInfo entityInfo = InternalGetEntityInfo(entityId);
             if (entityInfo is null)
             {
                 throw new KuusouEngineException("Entity is not registered");
@@ -400,7 +411,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public void ActivateEntity(int entityId, object userData)
         {
-            EntityInfo entityInfo = GetEntityInfo(entityId);
+            EntityInfo entityInfo = InternalGetEntityInfo(entityId);
             if (entityInfo is null)
             {
                 throw new KuusouEngineException("Entity is not registered");
@@ -454,7 +465,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public IEntity[] GetChildEntities(int parentEntityId)
         {
-            EntityInfo parentEntityInfo = GetEntityInfo(parentEntityId);
+            EntityInfo parentEntityInfo = InternalGetEntityInfo(parentEntityId);
             if (parentEntityInfo == null)
             {
                 throw new KuusouEngineException("Parent entity is not registered");
@@ -473,7 +484,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public void GetChildEntities(int parentEntityId, List<IEntity> results)
         {
-            EntityInfo parentEntityInfo = GetEntityInfo(parentEntityId);
+            EntityInfo parentEntityInfo = InternalGetEntityInfo(parentEntityId);
             if (parentEntityInfo == null)
             {
                 throw new KuusouEngineException("Parent entity is not registered");
@@ -492,7 +503,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public int GetChildEntitiyCount(int parentEntityId)
         {
-            EntityInfo parentEntityInfo = GetEntityInfo(parentEntityId);
+            EntityInfo parentEntityInfo = InternalGetEntityInfo(parentEntityId);
             if (parentEntityInfo == null)
             {
                 throw new KuusouEngineException("Parent entity is not registered");
@@ -502,7 +513,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public IEntity GetChildEntity(int parentEntityId)
         {
-            EntityInfo parentEntityInfo = GetEntityInfo(parentEntityId);
+            EntityInfo parentEntityInfo = InternalGetEntityInfo(parentEntityId);
             if (parentEntityInfo == null)
             {
                 throw new KuusouEngineException("Parent entity is not registered");
@@ -543,7 +554,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public IEntity GetParentEntity(int childEntityId)
         {
-            EntityInfo childEntityInfo = GetEntityInfo(childEntityId);
+            EntityInfo childEntityInfo = InternalGetEntityInfo(childEntityId);
             if (childEntityInfo is null)
             {
                 throw new KuusouEngineException("Child entity is not registered");
@@ -576,7 +587,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public bool IsActived(int entityId)
         {
-            EntityInfo entityInfo = GetEntityInfo(entityId);
+            EntityInfo entityInfo = InternalGetEntityInfo(entityId);
             if (entityInfo is null)
             {
                 throw new KuusouEngineException("Entity is not registered");
@@ -658,12 +669,12 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public IComponent AddComponent(int entityId, Type componentType)
         {
-            EntityInfo entityInfo= GetEntityInfo(entityId);
+            EntityInfo entityInfo= InternalGetEntityInfo(entityId);
             if (entityInfo is null)
             {
                 throw new KuusouEngineException("Target Entity is not registered");
             }
-            return entityInfo.GetComponent(componentType);
+            return entityInfo.AddComponent(componentType);
         }
 
         public TComponent AddComponent<TComponent>(IEntity entity) where TComponent : class, IComponent
@@ -683,7 +694,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public void RemoveComponent(int entityId, Type componentType)
         {
-            EntityInfo entityInfo = GetEntityInfo(entityId);
+            EntityInfo entityInfo = InternalGetEntityInfo(entityId);
             if (entityInfo is null)
             {
                 throw new KuusouEngineException("Target Entity is not registered");
@@ -708,7 +719,7 @@ namespace KuusouEngine.EngineBasic.Entity
 
         public IComponent GetComponent(int entityId, Type componentType)
         {
-            EntityInfo entityInfo = GetEntityInfo(entityId);
+            EntityInfo entityInfo = InternalGetEntityInfo(entityId);
             if (entityInfo is null)
             {
                 throw new KuusouEngineException("Target Entity is not registered");

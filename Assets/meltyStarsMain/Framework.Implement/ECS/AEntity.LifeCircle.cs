@@ -123,26 +123,26 @@ namespace KuusouEngine
         {
             (this as IAddComponent)?.OnAddComponentCore(component);
             component.OnAddedAsComponent(this);
-            EventScheduler.Instance.Dispatch(new EventType.OnAddComponent() { Entity = this, Component = component });
+            //EventScheduler.Instance.Dispatch(new EventType.OnAddComponent() { Entity = this, Component = component });
         }
         private void OnRemoveComponent(AComponent component)
         {
             (this as IRemoveComponent)?.OnRemoveComponentCore(component);
             component.OnRemovedFromComponent(this);
             component.Destroy();
-            EventScheduler.Instance.Dispatch(new EventType.OnRemoveComponent() { Entity = this, Component = component });
+            //EventScheduler.Instance.Dispatch(new EventType.OnRemoveComponent() { Entity = this, Component = component });
         }
         private void OnAddChild(AEntity childEntity)
         {
             (this as IAddChild)?.OnAddChildCore(childEntity);
             (childEntity as IAddedAsChild)?.OnAddedAsChildCore(this);
-            EventScheduler.Instance.Dispatch(new EventType.OnAddChild() { Parent = this, Child = childEntity });
+            //EventScheduler.Instance.Dispatch(new EventType.OnAddChild() { Parent = this, Child = childEntity });
         }
         private void OnRemoveChild(AEntity childEntity)
         {
             (this as IRemoveChild)?.OnRemoveChildCore(childEntity);
             (childEntity as IRemovedFromChild)?.OnRemovedFromChildCore(this);
-            EventScheduler.Instance.Dispatch(new EventType.OnRemoveChild() { Parent = this, Child = childEntity });
+            //EventScheduler.Instance.Dispatch(new EventType.OnRemoveChild() { Parent = this, Child = childEntity });
         }
         private void OnParentChanged(AEntity previous, AEntity recent)
         {

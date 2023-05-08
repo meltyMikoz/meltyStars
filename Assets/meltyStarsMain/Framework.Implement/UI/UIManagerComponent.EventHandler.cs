@@ -1,3 +1,5 @@
+using KuusouEngine.EngineBasic.Event;
+using KuusouEngine.EngineImplement.Event;
 using System;
 using System.Collections.Generic;
 
@@ -5,11 +7,11 @@ namespace KuusouEngine.UI
 {
     public partial class UIManagerComponent
     {
-        public class UIManagerComponentEventHandler<TEventType> : AEventHandler<TEventType> where TEventType : struct
+        public class UIManagerComponentEventHandler<TEventType> : AbstractEventHandler<TEventType> where TEventType : struct, IEvent
         {
-            protected override void Execute(TEventType eventType)
+            protected override void InternalHandle(object sender, TEventType eventArgs)
             {
-                UIManagerComponent.Instance.UIDispatch(eventType);
+                UIManagerComponent.Instance.UIDispatch(eventArgs);
             }
         }
         /// <summary>
@@ -27,14 +29,14 @@ namespace KuusouEngine.UI
         /// <summary>
         /// 注册UI事件
         /// </summary>
-        public void RegisterEvent<TEventType>() where TEventType : struct
+        public void RegisterEvent<TEventType>() where TEventType : struct,IEvent
         {
             Type type = typeof(TEventType);
             if (!m_RegisteredEventHandlers.ContainsKey(type))
             {
-                AEventHandler<TEventType> eventHandler = new UIManagerComponentEventHandler<TEventType>();
+                AbstractEventHandler<TEventType> eventHandler = new UIManagerComponentEventHandler<TEventType>();
                 m_RegisteredEventHandlers.Add(type, eventHandler);
-                EventScheduler.Instance.Subscribe(eventHandler);
+                //EventScheduler.Instance.Subscribe(eventHandler);
             }
         }
         /// <summary>

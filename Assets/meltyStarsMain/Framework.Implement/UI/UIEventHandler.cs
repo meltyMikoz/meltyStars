@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using KuusouEngine.EngineBasic.Event;
 
 namespace KuusouEngine.UI
 {
@@ -18,7 +19,7 @@ namespace KuusouEngine.UI
         void Handle(AUIWindow window, TEventType eventType);
     }
     [UIEvent]
-    public abstract class AUIEventHandler<TEventType> : IUIEventHandler<TEventType> where TEventType : struct
+    public abstract class AUIEventHandler<TEventType> : IUIEventHandler<TEventType> where TEventType : struct, IEvent
     {
         public Type GetTypeOfEvent()
         {
@@ -43,7 +44,7 @@ namespace KuusouEngine.UI
         }
     }
     [UIEvent]
-    public abstract class AUIEventHandler<TEventType, TWindowType> : IUIEventHandler<TEventType> where TEventType : struct where TWindowType : AUIWindow
+    public abstract class AUIEventHandler<TEventType, TWindowType> : IUIEventHandler<TEventType> where TEventType : struct, IEvent where TWindowType : AUIWindow
     {
         public Type GetTypeOfEvent()
         {

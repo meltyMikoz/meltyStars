@@ -5,12 +5,12 @@ namespace KuusouEngine.EngineBasic.Fsm
     /// <summary>
     /// 有限状态机的基类
     /// </summary>
-    public abstract class AFsm
+    public abstract class FsmBase
     {
         private string _name;
-        public AFsm()
+        public FsmBase()
         {
-            this._name = string.Empty;
+            _name = string.Empty;
         }
         /// <summary>
         /// 有限状态机名称
@@ -20,11 +20,11 @@ namespace KuusouEngine.EngineBasic.Fsm
         {
             get
             {
-                return this._name;
+                return _name;
             }
             protected set
             {
-                this._name = value ?? string.Empty;
+                _name = value ?? string.Empty;
             }
         }
         /// <summary>
@@ -78,10 +78,10 @@ namespace KuusouEngine.EngineBasic.Fsm
         /// <summary>
         /// 有限状态机轮询
         /// </summary>
-        public abstract void Update();
+        public abstract void Update(float elapseFrequency, float elapseFrequencyReally);
         /// <summary>
         /// 关闭有限状态机
         /// </summary>
-        public abstract void ShutDown();
+        public abstract void Shutdown();
     }
 }
